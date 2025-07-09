@@ -12,7 +12,7 @@ connectDB()
         console.log("Error in listening: ",error);
         throw error
     })
-    app.listen(PORT || 8000,() => {
+    app.listen(PORT || 7000,() => {
         console.log(`Server is running at port: ${PORT}`);
     })
 })

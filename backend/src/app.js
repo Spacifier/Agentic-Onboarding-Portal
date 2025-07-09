@@ -1,10 +1,10 @@
-import express from 'express';
-import cors from 'cors';
-import cookieParser from 'cookie-parser';
+import express from "express";
+import cors from "cors";
+import cookieParser from "cookie-parser";
 
 const app = express()
 
-//setting middlewares
+//app.use is used for setting middlewares
 app.use(cors({
     origin: process.env.CORS_ORIGIN,
     credentials: true
@@ -16,7 +16,7 @@ app.use(express.static("public"))
 app.use(cookieParser())
 
 //routes import
-
+import userRouter from "./routes/user.route.js";
 
 //routes declaration
 app.use("/api/v1/users",userRouter)
