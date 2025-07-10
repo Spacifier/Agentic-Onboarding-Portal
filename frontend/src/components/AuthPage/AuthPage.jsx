@@ -58,60 +58,131 @@ function AuthPage(){
       setLoading(false);
     }
   };
-
-return (
-    <div className="auth-container">
-        <div className="form-wrapper">
-            <form onSubmit={handleSubmit} className="auth-form">
-                <h2>{isLogin ? "Login" : "Sign Up"}</h2>
-                {!isLogin && (
-                    <>
-                        <input
-                        name="fullname"
-                        placeholder="Full Name"
-                        value={form.fullname}
-                        onChange={handleChange}
-                        required
-                        />
-                        <input
-                        name="username"
-                        placeholder="Username"
-                        value={form.username}
-                        onChange={handleChange}
-                        required
-                        />
-                    </>
-                )}
-                <input
+    return (
+        <div className="overflow-hidden absolute-center">
+        <div className={`container ${!isLogin ? "active" : ""}`}>
+            <div className="form-box login overflow-hidden">
+            {isLogin && (
+                <form onSubmit={handleSubmit}>
+                <h1>Login</h1>
+                <div className="input-box">
+                    <input
+                    type="email"
                     name="email"
                     placeholder="Email"
-                    type="email"
                     value={form.email}
                     onChange={handleChange}
                     required
-                />
-                <input
+                    />
+                    <i className="bx bxs-envelope"></i>
+                </div>
+                <div className="input-box">
+                    <input
+                    type="password"
                     name="password"
                     placeholder="Password"
-                    type="password"
                     value={form.password}
                     onChange={handleChange}
                     required
-                />
+                    />
+                    <i className="bx bxs-lock-alt"></i>
+                </div>
                 {error && <p className="error-msg">{error}</p>}
-                <button type="submit" disabled={loading}>
-                    {loading ? "Please wait..." : isLogin ? "Login" : "Sign Up"}
+                <button type="submit" className="btn" disabled={loading}>
+                    {loading ? "Please wait..." : "Login"}
                 </button>
-                <p>
-                    {isLogin ? "Don't have an account?" : "Already have an account?"}{" "}
-                    <span className="link" onClick={toggleForm}>
-                        {isLogin ? "Sign Up" : "Login"}
-                    </span>
-                </p>
-            </form>
+                <p>or login with social platforms</p>
+                <div className="social-icons">
+                    <a href="#"><i className='bx bxl-google'></i></a>
+                    <a href="#"><i className='bx bxl-facebook'></i></a>
+                    <a href="#"><i className='bx bxl-github'></i></a>
+                    <a href="#"><i className='bx bxl-linkedin'></i></a>
+                </div>
+                </form>
+            )}
+            </div>
+
+            <div className="form-box register">
+            {!isLogin && (
+                <form onSubmit={handleSubmit}>
+                <h1>Registration</h1>
+                <div className="input-box">
+                    <input
+                    name="fullname"
+                    placeholder="Full Name"
+                    value={form.fullname}
+                    onChange={handleChange}
+                    required
+                    />
+                    <i className="bx bxs-user"></i>
+                </div>
+                <div className="input-box">
+                    <input
+                    name="username"
+                    placeholder="Username"
+                    value={form.username}
+                    onChange={handleChange}
+                    required
+                    />
+                    <i className="bx bxs-user"></i>
+                </div>
+                <div className="input-box">
+                    <input
+                    type="email"
+                    name="email"
+                    placeholder="Email"
+                    value={form.email}
+                    onChange={handleChange}
+                    required
+                    />
+                    <i className="bx bxs-envelope"></i>
+                </div>
+                <div className="input-box">
+                    <input
+                    type="password"
+                    name="password"
+                    placeholder="Password"
+                    value={form.password}
+                    onChange={handleChange}
+                    required
+                    />
+                    <i className="bx bxs-lock-alt"></i>
+                </div>
+                {error && <p className="error-msg">{error}</p>}
+                <button type="submit" className="btn" disabled={loading}>
+                    {loading ? "Please wait..." : "Register"}
+                </button>
+                <p>or register with social platforms</p>
+                <div className="social-icons">
+                    <a href="#"><i className='bx bxl-google'></i></a>
+                    <a href="#"><i className='bx bxl-facebook'></i></a>
+                    <a href="#"><i className='bx bxl-github'></i></a>
+                    <a href="#"><i className='bx bxl-linkedin'></i></a>
+                </div>
+                </form>
+            )}
+            </div>
+
+            <div className="toggle-box">
+            <div className="toggle-panel toggle-left">
+                <h1>Hello, Welcome!</h1>
+                <p>Don't have an account?</p>
+                <button className="btn register-btn" onClick={() => setIsLogin(false)}>
+                Register
+                </button>
+            </div>
+            <div className="toggle-panel toggle-right">
+                <h1>Welcome Back!</h1>
+                <p>Already have an account?</p>
+                <button className="btn login-btn" onClick={() => setIsLogin(true)}>
+                Login
+                </button>
+            </div>
+            </div>
         </div>
-    </div>
-  );
+        </div>
+    );
+
 };
 
 export default AuthPage;
