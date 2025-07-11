@@ -68,7 +68,7 @@ const PersonalFinancingForm = () => {
     });
 
     try {
-      const response = await axios.post("http://localhost:5052/api/upload-docs", uploadForm, {
+      const response = await axios.post("https://agentic-onboarding-backend.onrender.com/api/upload-docs", uploadForm, {
         headers: { "Content-Type": "multipart/form-data" },
       });
 

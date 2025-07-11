@@ -35,7 +35,7 @@ function AuthPage(){
       : form;
 
     try {
-      const res = await fetch(`http://localhost:7000${endpoint}`, {
+      const res = await fetch(`https://agentic-onboarding-backend.onrender.com${endpoint}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
