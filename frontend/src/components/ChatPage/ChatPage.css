@@ -2,12 +2,13 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh;
+  height: 90vh;
   background: #f3f4f6;
+  border-radius: 12px;
 }
 
 .chat-window {
-  width: 420px;
+  width: 50vw;
   height: 90vh;
   background: white;
   border-radius: 12px;
@@ -80,4 +81,102 @@
   color: white;
   border-radius: 8px;
   cursor: pointer;
+}
+
+.avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  margin-right: 8px;
+  vertical-align: middle;
+}
+
+.message {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Typing dots animation */
+.typing-indicator {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.dot-flash {
+  width: 8px;
+  height: 8px;
+  background: #888;
+  border-radius: 50%;
+  animation: flash 1.4s infinite ease-in-out both;
+}
+
+.dot-flash:nth-child(2) {
+  animation-delay: 0.2s;
+}
+.dot-flash:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+.avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  margin-right: 8px;
+  flex-shrink: 0;
+}
+
+.user-avatar {
+  background-color: #444;
+  color: white;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.reset-button {
+  float: right;
+  margin-right: 12px;
+  padding: 5px 12px;
+  font-size: 12px;
+  background-color: #ffffff20;
+  border: 1px solid white;
+  border-radius: 4px;
+  color: white;
+  cursor: pointer;
+}
+
+.reset-button:hover {
+  background-color: #ffffff40;
+}
+
+/* Typing animation */
+.typing-indicator {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.dot-flash {
+  width: 8px;
+  height: 8px;
+  background: #888;
+  border-radius: 50%;
+  animation: flash 1.4s infinite ease-in-out both;
+}
+
+.dot-flash:nth-child(2) { animation-delay: 0.2s; }
+.dot-flash:nth-child(3) { animation-delay: 0.4s; }
+
+@keyframes flash {
+  0%, 80%, 100% {
+    transform: scale(0);
+    opacity: 0.3;
+  }
+  40% {
+    transform: scale(1);
+    opacity: 1;
+  }
 }

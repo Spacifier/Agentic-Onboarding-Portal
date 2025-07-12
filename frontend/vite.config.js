@@ -6,7 +6,7 @@ import tailwindcss from '@tailwindcss/vite'
 export default defineConfig({
     server:{
         proxy : {
-            '/api': 'http://localhost:7000'
+            '/api': 'https://agentic-onboarding-backend.onrender.com'
         },
     },
   plugins: [react(), tailwindcss()],
