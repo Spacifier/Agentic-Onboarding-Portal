@@ -1,0 +1,109 @@
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@600&display=swap');
+
+body {
+  background: #eaeef6;
+  font-family: 'Open Sans', sans-serif;
+}
+
+.navbar {
+  position: fixed;
+  top: 50%;
+  left: 1rem;
+  transform: translateY(-50%);
+  background: #fff;
+  border-radius: 10px;
+  padding: 1rem 0;
+  box-shadow: 0 0 40px rgba(0, 0, 0, 0.03);
+}
+
+
+.navbar_link {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 3.5rem;
+  width: 5.5rem;
+  color: #6a778e;
+  transition: 250ms ease all;
+}
+
+.navbar_link span {
+  position: absolute;
+  left: 100%;
+  transform: translate(-3rem);
+  margin-left: 1rem;
+  opacity: 0;
+  pointer-events: none;
+  color: #406ff3;
+  background: #fff;
+  padding: 0.75rem;
+  transition: 250ms ease all;
+  border-radius: 17.5px;
+}
+
+.navbar_link:hover {
+  color: #fff;
+  white-space: nowrap;
+}
+
+.navbar:not(:hover) .navbar_link:focus span,
+.navbar_link:hover span {
+  opacity: 1;
+  transform: translate(0);
+}
+
+.navbar_menu {
+  position: relative;
+}
+
+.navbar_item:last-child::before {
+  content: '';
+  position: absolute;
+  opacity: 0;
+  z-index: -1;
+  top: 0;
+  left: 1rem;
+  width: 3.5rem;
+  height: 3.5rem;
+  background: #406ff3;
+  border-radius: 17.5px;
+  transition: 250ms cubic-bezier(1, 0.2, 0.1, 1.2) all;
+}
+
+@keyframes gooeyEffect{
+  0% { transform: scale(1, 1); }
+  50% { transform: scale(0.5, 1.5); }
+  100% { transform: scale(1, 1); }
+}
+
+.navbar_item:nth-child(1):hover ~ .navbar_item:last-child::before {
+  top: calc((100% / 6) * 0);
+  animation: gooeyEffect 250ms 1;
+  opacity: 1;
+}
+.navbar_item:nth-child(2):hover ~ .navbar_item:last-child::before {
+  top: calc((100% / 6) * 1);
+  animation: gooeyEffect 250ms 1;
+  opacity: 1;
+}
+.navbar_item:nth-child(3):hover ~ .navbar_item:last-child::before {
+  top: calc((100% / 6) * 2);
+  animation: gooeyEffect 250ms 1;
+  opacity: 1;
+}
+.navbar_item:nth-child(4):hover ~ .navbar_item:last-child::before {
+  top: calc((100% / 6) * 3);
+  animation: gooeyEffect 250ms 1;
+  opacity: 1;
+}
+.navbar_item:nth-child(5):hover ~ .navbar_item:last-child::before {
+  top: calc((100% / 6) * 4);
+  animation: gooeyEffect 250ms 1;
+  opacity: 1;
+}
+.navbar_item:nth-child(6):hover ~ .navbar_item:last-child::before {
+  top: calc((100% / 6) * 5);
+  animation: gooeyEffect 250ms 1;
+  opacity: 1;
+}

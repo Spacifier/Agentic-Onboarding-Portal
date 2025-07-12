@@ -97,9 +97,9 @@ function ChatPage() {
   );
 
   return (
-    <div className="chat-page">
+    <div className="chat-page absolute-center">
       <div className="chat-window">
-        <div className="chat-header">
+        <div className="chat-header text-lg">
           Smart Onboarding Chat
           <button onClick={resetChat} className="reset-button">Reset</button>
         </div>

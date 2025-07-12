@@ -1,10 +1,12 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./AuthPage.css"; 
+import { useLogin } from "../../api/auth.jsx";
 
 function AuthPage(){
     const navigate = useNavigate();
     const [isLogin, setIsLogin] = useState(true);
+    const {setIsLoggedIn} = useLogin();
     const [form, setForm] = useState({
         fullname: "",
         username: "",   
@@ -47,6 +49,7 @@ function AuthPage(){
 
       if (isLogin) {
         localStorage.setItem("accessToken", data.accessToken);
+        setIsLoggedIn(true);
         navigate("/chat");
       } else {
         alert("Account created successfully. Please login.");

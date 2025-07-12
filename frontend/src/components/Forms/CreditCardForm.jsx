@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import axios from "axios";
-import FormInputGroup from '../Common/FormInputGroup.jsx'
-import DocumentUploader from "../Common/DocumentUploader";
-import ApplicationSummary from "../Common/ApplicationSummary";
+import FormInputGroup from '../Common/Forms/FormInputGroup.jsx'
+import DocumentUploader from "../Common/Forms/DocumentUploader";
+import ApplicationSummary from "../Common/Forms/ApplicationSummary";
 
 const CreditCardForm = () => {
   const navigate = useNavigate();
@@ -61,6 +61,7 @@ const CreditCardForm = () => {
     const randomAppNumber = Math.floor(100000 + Math.random() * 900000);
     const appNumber = `CC-${randomAppNumber}`;
     uploadForm.append("applicationNumber", appNumber);
+    const token = localStorage.getItem("accessToken");
 
     Object.entries(formData).forEach(([key, val]) => {
       if (key === "aadhaarNumber") uploadForm.append("aadharNumber", val);
@@ -68,8 +69,9 @@ const CreditCardForm = () => {
     });
 
     try {
-      const response = await axios.post("https://agentic-onboarding-backend.onrender.com/api/upload-docs", uploadForm, {
+      const response = await axios.post("https://agentic-onboarding-backend.onrender.com/api/v1/application/upload-docs", uploadForm, {
         headers: { "Content-Type": "multipart/form-data" },
+        Authorization: `Bearer ${token}`,
       });
 
       setStatusMessage("Document processing success.");

@@ -5,6 +5,8 @@ import ChatPage from './components/ChatPage/ChatPage.jsx'
 import CreditCardForm from './components/Forms/CreditCardForm.jsx'
 import PersonalFinancingForm from './components/Forms/PersonalFinanceForm.jsx'
 import AccountForm from './components/Forms/AccountForm.jsx'
+import Dashboard from './components/Dashboard/Dashboard.jsx'
+import ProtectedRoute from './components/Common/ProtectedRoute.jsx'
 
 
 function App() {
@@ -12,11 +14,17 @@ function App() {
     <main className='relative min-h-screen'>
         <Routes>
             <Route path='/' element ={<Layout />}>
-                <Route path='' element={<AuthPage />} />
-                <Route path='/chat' element= {<ChatPage />} />
-                <Route path="/form" element={<CreditCardForm />} />
-                <Route path="/loan" element={<PersonalFinancingForm />} />
-                <Route path="/account" element={<AccountForm />} />
+                {/* Public Route */}
+                <Route index element={<AuthPage />} />
+
+                {/* Protected Routes */}
+                <Route element={<ProtectedRoute />}>
+                    <Route path='/chat' element={<ChatPage />} />
+                    <Route path='/form' element={<CreditCardForm />} />
+                    <Route path='/loan' element={<PersonalFinancingForm />} />
+                    <Route path='/account' element={<AccountForm />} />
+                    <Route path='/dashboard' element={<Dashboard />} />
+                </Route>
             </Route>
         </Routes>
     </main>

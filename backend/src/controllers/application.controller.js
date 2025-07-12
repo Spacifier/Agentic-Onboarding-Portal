@@ -5,6 +5,7 @@ import { launchAbbyyTransaction } from "../utils/abbyy.js";
 import { uploadOnCloudinary } from "../utils/cloudinary.js";
 import { v4 as uuidv4 } from "uuid";
 import { ApiError } from "../utils/ApiError.js";
+import {ApiResponse} from "../utils/ApiResponse.js";
 
 export const processDocumentUpload = async (req, res) => {
     try {

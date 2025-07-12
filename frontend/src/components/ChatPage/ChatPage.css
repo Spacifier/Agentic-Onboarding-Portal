@@ -30,34 +30,46 @@
   flex: 1;
   padding: 1rem;
   overflow-y: auto;
+  display: flex;
+  flex-direction: column;
 }
 
 .message {
-  margin: 8px 0;
+  margin: 6px 0;
   padding: 10px 14px;
-  border-radius: 8px;
-  max-width: 80%;
-}
-
-.message.user {
-  background-color: #e2f0ff;
-  align-self: flex-end;
-  text-align: right;
+  border-radius: 18px;
+  max-width: 75%;
+  word-wrap: break-word;
 }
 
 .message.bot {
-  background-color: #f1f1f1;
   align-self: flex-start;
+  background-color: #f1f1f1;
+  border-bottom-left-radius: 0;
+}
+
+.message.user {
+  align-self: flex-end;
+  background-color: #1e4eb2;
+  color: white;
+  border-bottom-right-radius: 0;
+  text-align: right;
 }
 
 .option-button {
   margin-top: 6px;
-  padding: 10px 12px;
+  padding: 10px 14px;
   background: #1e4eb2;
   color: white;
   border: none;
   border-radius: 6px;
   cursor: pointer;
+  max-width: 75%;
+  align-self: flex-start;
+}
+
+.message.user .option-button {
+  align-self: flex-end;
 }
 
 .chat-input {

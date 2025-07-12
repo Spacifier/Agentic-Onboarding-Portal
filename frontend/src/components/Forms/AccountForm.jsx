@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import axios from "axios";
-import FormInputGroup from '../Common/FormInputGroup.jsx'
-import DocumentUploader from "../Common/DocumentUploader";
-import ApplicationSummary from "../Common/ApplicationSummary";
+import FormInputGroup from '../Common/Forms/FormInputGroup.jsx'
+import DocumentUploader from "../Common/Forms/DocumentUploader";
+import ApplicationSummary from "../Common/Forms/ApplicationSummary";
 
 const AccountForm = () => {
   const navigate = useNavigate();
@@ -56,7 +56,8 @@ const AccountForm = () => {
     Object.values(documents).forEach((file) => {
       if (file) uploadForm.append("documents", file);
     });
-
+    
+    const token = localStorage.getItem("accessToken");
     const randomAppNumber = Math.floor(100000 + Math.random() * 900000);
     const appNumber = `BA-${randomAppNumber}`;
     uploadForm.append("applicationNumber", appNumber);
@@ -67,8 +68,9 @@ const AccountForm = () => {
     });
 
     try {
-      const response = await axios.post("https://agentic-onboarding-backend.onrender.com/api/upload-docs", uploadForm, {
+      const response = await axios.post("https://agentic-onboarding-backend.onrender.com/api/v1/application/upload-docs", uploadForm, {
         headers: { "Content-Type": "multipart/form-data" },
+        Authorization: `Bearer ${token}`,
       });
 
       setStatusMessage("Document processing success.");
