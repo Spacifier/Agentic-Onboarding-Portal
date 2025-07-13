@@ -26,10 +26,12 @@ const applicationSchema = new Schema(
             enum: ["Approved","Rejected","Pending"],
             default: "Pending"
         },
-        validationSummary: {
-            file: String,
-            status: String
-        }
+        validationSummary: [
+            {
+                file: String,
+                status: String
+            }
+        ]
     },
     {
         timestamps: true

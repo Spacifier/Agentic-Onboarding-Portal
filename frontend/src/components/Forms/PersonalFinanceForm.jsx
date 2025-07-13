@@ -11,7 +11,7 @@ const PersonalFinancingForm = () => {
   const selectedProduct = searchParams.get("product");
 
   const [formData, setFormData] = useState({
-    fullName: "",
+    fullname: "",
     email: "",
     mobile: "",
     dob: "",
@@ -54,9 +54,12 @@ const PersonalFinancingForm = () => {
     setStatusMessage("Processing your application...");
 
     const uploadForm = new FormData();
-    Object.values(documents).forEach((file) => {
-      if (file) uploadForm.append("documents", file);
+    Object.entries(documents).forEach(([key, file]) => {
+    if (file) {
+        uploadForm.append(key, file); // ✅ Match backend field names exactly
+    }
     });
+
 
     const randomAppNumber = Math.floor(100000 + Math.random() * 900000);
     const appNumber = `PF-${randomAppNumber}`;
@@ -68,10 +71,15 @@ const PersonalFinancingForm = () => {
       else uploadForm.append(key, val);
     });
 
+    uploadForm.append("serviceType", "loan"); // or "loan", "credit_card"
+
+
     try {
       const response = await axios.post("https://agentic-onboarding-backend.onrender.com/api/v1/application/upload-docs", uploadForm, {
-        headers: { "Content-Type": "multipart/form-data" },
-        Authorization: `Bearer ${token}`,
+        headers: {
+            "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${token}`,
+        },
       });
 
       setStatusMessage("Document processing success.");
@@ -96,7 +104,7 @@ const PersonalFinancingForm = () => {
         {selectedProduct && <p>Selected Product: <strong>{selectedProduct}</strong></p>}
 
         <div className="form-row">
-          <FormInputGroup label="Full Name" name="fullName" required value={formData.fullName} onChange={handleChange} />
+          <FormInputGroup label="Full Name" name="fullname" required value={formData.fullname} onChange={handleChange} />
           <FormInputGroup label="Email" name="email" type="email" required value={formData.email} onChange={handleChange} />
           <FormInputGroup label="Mobile Number" name="mobile" required value={formData.mobile} onChange={handleChange} />
         </div>

@@ -1,28 +1,23 @@
 import React, { useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import axios from "axios";
-import FormInputGroup from '../Common/Forms/FormInputGroup.jsx'
+import FormInputGroup from "../Common/Forms/FormInputGroup.jsx";
 import DocumentUploader from "../Common/Forms/DocumentUploader";
 import ApplicationSummary from "../Common/Forms/ApplicationSummary";
 
 const CreditCardForm = () => {
-  const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const selectedProduct = searchParams.get("product");
 
   const [formData, setFormData] = useState({
     fullName: "",
     email: "",
-    mobile: "",
-    dob: "",
-    occupation: "",
-    salary: "",
     aadhaarNumber: "",
     panNumber: "",
     passportNumber: "",
     voterIdNumber: "",
-    address: "",
-    country: "",
+    dob: "",
+    salary: "",
   });
 
   const [documents, setDocuments] = useState({
@@ -54,25 +49,32 @@ const CreditCardForm = () => {
     setStatusMessage("Processing your application...");
 
     const uploadForm = new FormData();
-    Object.values(documents).forEach((file) => {
-      if (file) uploadForm.append("documents", file);
-    });
-
-    const randomAppNumber = Math.floor(100000 + Math.random() * 900000);
-    const appNumber = `CC-${randomAppNumber}`;
-    uploadForm.append("applicationNumber", appNumber);
     const token = localStorage.getItem("accessToken");
+    const appNumber = `CC-${Math.floor(100000 + Math.random() * 900000)}`;
+    uploadForm.append("applicationNumber", appNumber);
+    uploadForm.append("serviceType", "credit_card");
 
     Object.entries(formData).forEach(([key, val]) => {
       if (key === "aadhaarNumber") uploadForm.append("aadharNumber", val);
+      else if (key === "voterIdNumber") uploadForm.append("voterId", val);
       else uploadForm.append(key, val);
     });
 
+    Object.entries(documents).forEach(([key, file]) => {
+      if (file) uploadForm.append(key, file);
+    });
+
     try {
-      const response = await axios.post("https://agentic-onboarding-backend.onrender.com/api/v1/application/upload-docs", uploadForm, {
-        headers: { "Content-Type": "multipart/form-data" },
-        Authorization: `Bearer ${token}`,
-      });
+      const response = await axios.post(
+        "https://agentic-onboarding-backend.onrender.com/api/v1/application/upload-docs",
+        uploadForm,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
       setStatusMessage("Document processing success.");
       setValidationSummary(response.data.validationResults || []);
@@ -98,13 +100,7 @@ const CreditCardForm = () => {
         <div className="form-row">
           <FormInputGroup label="Full Name" name="fullName" required value={formData.fullName} onChange={handleChange} />
           <FormInputGroup label="Email" name="email" type="email" required value={formData.email} onChange={handleChange} />
-          <FormInputGroup label="Mobile Number" name="mobile" required value={formData.mobile} onChange={handleChange} />
-        </div>
-
-        <div className="form-row">
           <FormInputGroup label="DOB" name="dob" type="date" required value={formData.dob} onChange={handleChange} />
-          <FormInputGroup label="Occupation" name="occupation" value={formData.occupation} onChange={handleChange} />
-          <FormInputGroup label="Salary" name="salary" type="number" value={formData.salary} onChange={handleChange} />
         </div>
 
         <div className="form-row">
@@ -115,8 +111,7 @@ const CreditCardForm = () => {
 
         <div className="form-row">
           <FormInputGroup label="Voter ID Number" name="voterIdNumber" value={formData.voterIdNumber} onChange={handleChange} />
-          <FormInputGroup label="Address" name="address" value={formData.address} onChange={handleChange} />
-          <FormInputGroup label="Country" name="country" value={formData.country} onChange={handleChange} />
+          <FormInputGroup label="Salary" name="salary" type="number" value={formData.salary} onChange={handleChange} />
         </div>
 
         <h3>Upload Documents</h3>
@@ -128,8 +123,8 @@ const CreditCardForm = () => {
 
         <div className="form-row">
           <DocumentUploader label="Voter ID (PDF/JPG/PNG)" name="voterId" onChange={handleFileChange} />
-          <DocumentUploader label="Bank Statement (PDF/JPG/PNG)" name="bankStatement" onChange={handleFileChange} />
           <DocumentUploader label="Payslip (PDF/JPG/PNG)" name="payslip" onChange={handleFileChange} />
+          <DocumentUploader label="Bank Statement (PDF/JPG/PNG)" name="bankStatement" onChange={handleFileChange} />
         </div>
 
         <button type="submit">Submit</button>
