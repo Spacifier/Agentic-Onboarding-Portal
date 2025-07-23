@@ -1,6 +1,6 @@
-﻿# 🧠 Agentic Onboarding Portal
+# 🧠 Agentic Onboarding Portal
 
-A full-stack, chatbot-powered web platform to help users seamlessly apply for **Credit Cards**, **Personal Loans**, and **Bank Accounts** — featuring document upload, smart validation, and secure authentication.
+A full-stack, AI-powered web platform with **RAG (Retrieval-Augmented Generation)** architecture to help users seamlessly apply for **Credit Cards**, **Personal Loans**, and **Bank Accounts** — featuring intelligent document processing, CIBIL score integration, and personalized recommendations.
 
 ---
 
@@ -11,23 +11,35 @@ A full-stack, chatbot-powered web platform to help users seamlessly apply for **
 
 ## 🚀 Features
 
-- 💬 **Chatbot Interaction**  
-  Guides users step-by-step for Credit Card, Loan, and Account onboarding using dynamic prompts.
+- 🤖 **AI-Powered RAG System**  
+  Advanced Retrieval-Augmented Generation using OpenAI GPT-4o for personalized credit card recommendations based on ICICI Bank data.
 
-- 🧾 **Smart Form Submission**  
+- 💬 **Enhanced Chatbot Interaction**  
+  Intelligent chatbot with CIBIL score integration and personalized financial advice using prompt engineering.
+
+- 🧾 **Smart Form Submission with OCR**  
   Separate forms for:
   - Credit Card Applications
   - Personal Financing / Loan
   - Account Opening
+  Enhanced with Tesseract.js OCR for automatic document data extraction and validation.
 
-- 📁 **Document Upload & Validation**  
-  Users can upload Aadhaar, PAN, Passport, Payslip, and more.  
-  Integrated with ABBYY OCR (or mock/optional Tesseract fallback).
+- 📁 **Agentic AI Document Processing**  
+  Advanced OCR with Tesseract.js for automatic text recognition and document linking.
+  Supports Aadhaar, PAN, Passport, Payslip, Bank Statements with intelligent data extraction.
 
+- 📊 **CIBIL Score Integration**  
+  Real-time credit score checking with mock API (easily replaceable with real CIBIL API).
+  Instant eligibility assessment and personalized recommendations.
+
+- 🎯 **RAG-Based Recommendations**  
+  Web scraping of ICICI Bank credit card data with vector database storage.
+  Intelligent matching of customer profiles with suitable credit card options using ChromaDB and OpenAI embeddings.
 - 🔒 **Authentication**  
   - Secure user login and signup  
   - JWT-based token system with refresh handling  
   - Tokens managed via HTTP-only cookies
+  - Mandatory field validation for enhanced security
 
 - 📧 **Email Notifications**  
   Automatic email confirmations with application status
@@ -47,11 +59,23 @@ A full-stack, chatbot-powered web platform to help users seamlessly apply for **
 **Backend:**
 - Node.js + Express.js
 - MongoDB + Mongoose
+- **RAG Architecture:**
+  - OpenAI GPT-4o for LLM
+  - ChromaDB for vector storage
+  - OpenAI Embeddings (text-embedding-3-large)
+  - LangChain for document processing
 - JWT Authentication
+- **Document Processing:**
+  - Tesseract.js for OCR
+  - Sharp for image preprocessing
+  - PDF parsing capabilities
+- **Web Scraping:**
+  - Puppeteer for dynamic content
+  - Cheerio for HTML parsing
 - Multer for file uploads
 - Nodemailer for email services
 - Cloudinary SDK
-- ABBYY OCR (mocked or real)
+- CIBIL Score API integration (with mock fallback)
 
 ---
 
@@ -71,14 +95,32 @@ REFRESH_TOKEN_EXPIRY=10d
 GMAIL_USER=your@gmail.com
 GMAIL_PASS=yourAppPassword
 
-ABBYY_CLIENT_ID = yourClientId
-ABBYY_CLIENT_SECRET = yourClientSecret
-ABBYY_SKILL_ID = yourSkillId
+# OpenAI Configuration (Required for RAG)
+OPENAI_API_KEY=your_openai_api_key_here
 
+# ChromaDB Configuration
+CHROMA_URL=http://localhost:8000
+
+# CIBIL API Configuration (Optional - will use mock if not provided)
+CIBIL_API_URL=https://api.cibil.com/v1
+CIBIL_API_KEY=your_cibil_api_key
+CIBIL_MOCK_MODE=true
 
 CLOUDINARY_CLOUD_NAME=yourCloudinaryCloud
 CLOUDINARY_API_KEY=yourKey
 CLOUDINARY_API_SECRET=yourSecret
+```
+
+### 🗄️ Setting up ChromaDB (Vector Database)
+
+1. Install ChromaDB:
+```bash
+pip install chromadb
+```
+
+2. Start ChromaDB server:
+```bash
+chroma run --host localhost --port 8000
 ```
 
 ---
@@ -96,9 +138,42 @@ npm run dev
 ### Frontend
 
 ```bash
-cd client
+cd frontend
 npm install
 npm run dev
+```
+
+### 🚀 RAG System Setup
+
+1. **Initialize the RAG system:**
+```bash
+# Start ChromaDB
+chroma run --host localhost --port 8000
+
+# Start backend server
+cd backend && npm run dev
+```
+
+2. **Scrape and index ICICI Bank data:**
+```bash
+# Make a POST request to scrape and index data
+curl -X POST http://localhost:7000/api/v1/rag/scrape-and-index \
+  -H "Authorization: Bearer YOUR_JWT_TOKEN"
+```
+
+3. **Test recommendations:**
+```bash
+curl -X POST http://localhost:7000/api/v1/rag/recommendations \
+  -H "Authorization: Bearer YOUR_JWT_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "income": 500000,
+    "employmentType": "salaried",
+    "panNumber": "ABCDE1234F",
+    "spendingCategories": ["dining", "shopping"],
+    "preferredRewards": ["cashback"],
+    "annualFeeTolerance": "moderate"
+  }'
 ```
 
 ---
@@ -112,28 +187,69 @@ npm run dev
 | GET    | `/api/v1/user/current-user` | Fetch user data (JWT protected) |
 | POST   | `/api/upload-docs`      | Submit application form & documents |
 | POST   | `/api/chat`             | Start chatbot interaction |
+| **RAG System Routes** |
+| GET    | `/api/v1/rag/health`    | Check RAG system health |
+| POST   | `/api/v1/rag/scrape-and-index` | Scrape ICICI data and index |
+| POST   | `/api/v1/rag/recommendations` | Get AI-powered recommendations |
+| POST   | `/api/v1/rag/cibil-score` | Get CIBIL score |
+| POST   | `/api/v1/rag/process-document` | OCR document processing |
+| GET    | `/api/v1/rag/search` | Search credit cards |
 
 ---
 
 ## 📬 Sample Use Flow
 
 1. User logs in / signs up
-2. Chatbot initiates conversation: `Hi! How can I assist you today?`
-3. User selects “Credit Card”
-4. PAN is collected → mock CIBIL generated
-5. Based on CIBIL, form link is suggested
-6. User submits form with documents
-7. Documents validated
-8. Confirmation email is sent with application number & status ✅
+2. **Enhanced Chatbot Flow:**
+   - AI-powered conversation: `Hi! I'm your Smart Financial Assistant powered by AI`
+   - User selects "Credit Card"
+   - PAN is collected → Real/Mock CIBIL score fetched
+   - User preferences collected (income, spending, rewards)
+   - **RAG system generates personalized recommendations**
+3. **Smart Application Process:**
+   - User fills form with mandatory field validation
+   - Documents uploaded and processed with OCR
+   - Automatic data extraction and validation
+   - Enhanced document verification
+4. **AI-Powered Results:**
+   - Intelligent approval/rejection based on multiple factors
+   - Detailed validation summary with OCR results
+   - Email confirmation with application status ✅
 
 ---
 
 ## 🧪 Future Additions
 
-- Azure OpenAI integration for conversational intelligence
+- ✅ OpenAI GPT-4o integration for conversational intelligence
+- ✅ RAG-based recommendation system
+- ✅ CIBIL score API integration
+- ✅ Advanced OCR with document linking
 - Real CIBIL score API
 - Admin dashboard to review applications
 - PDF application exports
+- Multi-bank support (HDFC, SBI, Axis)
+- Advanced fraud detection
+- Real-time application tracking
+
+---
+
+## 🏗️ RAG Architecture Details
+
+### Data Flow:
+1. **Web Scraping:** Puppeteer scrapes ICICI Bank credit card pages
+2. **Document Processing:** LangChain splits content into chunks
+3. **Embedding Generation:** OpenAI creates vector embeddings
+4. **Vector Storage:** ChromaDB stores embeddings with metadata
+5. **Query Processing:** User queries converted to embeddings
+6. **Similarity Search:** ChromaDB finds relevant credit cards
+7. **LLM Generation:** GPT-4o generates personalized recommendations
+
+### Key Components:
+- **Vector Database:** ChromaDB for similarity search
+- **Embeddings:** OpenAI text-embedding-3-large (3072 dimensions)
+- **LLM:** GPT-4o for natural language generation
+- **Document Chunking:** Recursive character text splitter
+- **Web Scraping:** Puppeteer + Cheerio for dynamic content
 
 ---
 
