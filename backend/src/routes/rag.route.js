@@ -9,6 +9,9 @@ import {
   explainRecommendation,
   searchCreditCards,
   healthCheck,
+  getRecommendationAnalytics,
+  trackUserInteraction,
+  getABTestResults
 } from "../controllers/rag.controller.js";
 
 const router = Router();
@@ -27,5 +30,10 @@ router.route("/process-document").post(
 );
 router.route("/explain/:cardName").post(verifyJWT, explainRecommendation);
 router.route("/search").get(verifyJWT, searchCreditCards);
+
+// Analytics routes
+router.route("/analytics").get(verifyJWT, getRecommendationAnalytics);
+router.route("/track-interaction").post(verifyJWT, trackUserInteraction);
+router.route("/ab-test-results").get(verifyJWT, getABTestResults);
 
 export default router;

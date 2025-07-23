@@ -1,6 +1,8 @@
 import ICICIScrapingService from '../services/scraping.service.js';
 import VectorStoreService from '../services/vectorstore.service.js';
 import RecommendationService from '../services/recommendation.service.js';
+import AdvancedRecommendationService from '../services/advanced-recommendation.service.js';
+import RecommendationAnalyticsService from '../services/recommendation-analytics.service.js';
 import CibilService from '../services/cibil.service.js';
 import OCRService from '../services/ocr.service.js';
 import { ApiError } from '../utils/ApiError.js';
@@ -11,6 +13,8 @@ import { asyncHandler } from '../utils/asyncHandler.js';
 const scrapingService = new ICICIScrapingService();
 const vectorStoreService = new VectorStoreService();
 const recommendationService = new RecommendationService();
+const advancedRecommendationService = new AdvancedRecommendationService();
+const analyticsService = new RecommendationAnalyticsService();
 const cibilService = new CibilService();
 const ocrService = new OCRService();
 
@@ -65,6 +69,9 @@ export const getRecommendations = asyncHandler(async (req, res) => {
       annualFeeTolerance,
       desiredFeatures,
       panNumber,
+      userId,
+      recommendationType = 'advanced', // 'basic', 'advanced', 'hybrid'
+      testGroup = 'A'
     } = req.body;
 
     // Validate required fields
@@ -95,18 +102,45 @@ export const getRecommendations = asyncHandler(async (req, res) => {
       preferredRewards: Array.isArray(preferredRewards) ? preferredRewards : [],
       annualFeeTolerance,
       desiredFeatures: Array.isArray(desiredFeatures) ? desiredFeatures : [],
+      age: req.body.age || 30,
     };
 
-    // Get recommendations
-    const recommendations = await recommendationService.getRecommendations(customerProfile);
+    // Get recommendations based on type
+    let recommendations;
+    const recommendationId = `rec_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    
+    switch (recommendationType) {
+      case 'advanced':
+        recommendations = await advancedRecommendationService.getContentBasedRecommendations(customerProfile);
+        break;
+      case 'hybrid':
+        recommendations = await advancedRecommendationService.getHybridRecommendations(customerProfile.userId, customerProfile);
+        break;
+      case 'ab_test':
+        recommendations = await advancedRecommendationService.getRecommendationsWithABTest(customerProfile.userId, customerProfile, testGroup);
+        break;
+      default:
+        recommendations = await recommendationService.getRecommendations(customerProfile);
+    }
+    
+    // Track recommendation serving
+    analyticsService.trackUserInteraction(customerProfile.userId, recommendationId, {
+      type: 'view',
+      recommendationType,
+      testGroup,
+      recommendationCount: recommendations.recommendations?.length || 0
+    });
 
     return res.status(200).json(
       new ApiResponse(
         200,
         {
+          recommendationId,
           customerProfile,
           cibilData,
           recommendations,
+          recommendationType,
+          testGroup,
           timestamp: new Date().toISOString(),
         },
         'Recommendations generated successfully'
@@ -312,5 +346,95 @@ export const healthCheck = asyncHandler(async (req, res) => {
   } catch (error) {
     console.error('Health check error:', error);
     throw new ApiError(500, 'Health check failed');
+  }
+});
+
+// Get recommendation analytics
+export const getRecommendationAnalytics = asyncHandler(async (req, res) => {
+  try {
+    const { timeframe = '7d' } = req.query;
+    
+    const analytics = analyticsService.getRecommendationAnalytics(timeframe);
+    const insights = analyticsService.generateInsights();
+    const realtimeMetrics = analyticsService.getRealtimeMetrics();
+    
+    return res.status(200).json(
+      new ApiResponse(
+        200,
+        {
+          analytics,
+          insights,
+          realtimeMetrics,
+          timestamp: new Date().toISOString()
+        },
+        'Analytics retrieved successfully'
+      )
+    );
+  } catch (error) {
+    console.error('Analytics error:', error);
+    throw new ApiError(500, 'Failed to retrieve analytics');
+  }
+});
+
+// Track user interaction with recommendations
+export const trackUserInteraction = asyncHandler(async (req, res) => {
+  try {
+    const {
+      recommendationId,
+      interactionType, // 'click', 'application', 'approval', 'rejection', 'feedback'
+      cardName,
+      rating,
+      feedback
+    } = req.body;
+    
+    const userId = req.user._id;
+    
+    if (!recommendationId || !interactionType) {
+      throw new ApiError(400, 'Recommendation ID and interaction type are required');
+    }
+    
+    analyticsService.trackUserInteraction(userId, recommendationId, {
+      type: interactionType,
+      cardName,
+      rating,
+      feedback
+    });
+    
+    // Update advanced recommendation service with user interaction
+    if (cardName && ['application', 'approval', 'rejection'].includes(interactionType)) {
+      advancedRecommendationService.updateUserInteraction(userId, cardName, interactionType, rating);
+    }
+    
+    return res.status(200).json(
+      new ApiResponse(
+        200,
+        { tracked: true },
+        'User interaction tracked successfully'
+      )
+    );
+  } catch (error) {
+    console.error('Interaction tracking error:', error);
+    throw new ApiError(500, 'Failed to track user interaction');
+  }
+});
+
+// Get A/B test results
+export const getABTestResults = asyncHandler(async (req, res) => {
+  try {
+    const abTestResults = analyticsService.getABTestResults();
+    
+    return res.status(200).json(
+      new ApiResponse(
+        200,
+        {
+          abTestResults,
+          timestamp: new Date().toISOString()
+        },
+        'A/B test results retrieved successfully'
+      )
+    );
+  } catch (error) {
+    console.error('A/B test results error:', error);
+    throw new ApiError(500, 'Failed to retrieve A/B test results');
   }
 });

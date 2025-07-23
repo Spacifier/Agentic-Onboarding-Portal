@@ -11,12 +11,17 @@ A full-stack, AI-powered web platform with **RAG (Retrieval-Augmented Generation
 
 ## 🚀 Features
 
-- 🤖 **AI-Powered RAG System**  
-  Advanced Retrieval-Augmented Generation using OpenAI GPT-4o for personalized credit card recommendations based on ICICI Bank data.
+- 🤖 **Advanced AI-Powered RAG System**  
+  Multi-layered Retrieval-Augmented Generation using OpenAI GPT-4o with content-based filtering, collaborative filtering, and hybrid recommendation algorithms inspired by modern product recommendation systems.
+
+- 🔬 **Machine Learning Recommendation Engine**  
+  Content-based filtering using cosine similarity, collaborative filtering for user behavior analysis, and hybrid approaches combining multiple recommendation strategies.
+
+- 📊 **Advanced Analytics & A/B Testing**  
+  Real-time recommendation performance tracking, user interaction analytics, A/B testing framework for algorithm optimization, and comprehensive recommendation insights.
 
 - 💬 **Enhanced Chatbot Interaction**  
-  Intelligent chatbot with CIBIL score integration and personalized financial advice using prompt engineering.
-
+  Intelligent chatbot with CIBIL score integration and personalized financial advice using advanced prompt engineering.
 - 🧾 **Smart Form Submission with OCR**  
   Separate forms for:
   - Credit Card Applications
@@ -64,6 +69,12 @@ A full-stack, AI-powered web platform with **RAG (Retrieval-Augmented Generation
   - ChromaDB for vector storage
   - OpenAI Embeddings (text-embedding-3-large)
   - LangChain for document processing
+- **Advanced Recommendation System:**
+  - Content-based filtering with feature extraction
+  - Collaborative filtering for user behavior analysis
+  - Hybrid recommendation algorithms
+  - Real-time analytics and A/B testing framework
+  - Cosine similarity calculations for card matching
 - JWT Authentication
 - **Document Processing:**
   - Tesseract.js for OCR
@@ -194,6 +205,10 @@ curl -X POST http://localhost:7000/api/v1/rag/recommendations \
 | POST   | `/api/v1/rag/cibil-score` | Get CIBIL score |
 | POST   | `/api/v1/rag/process-document` | OCR document processing |
 | GET    | `/api/v1/rag/search` | Search credit cards |
+| **Advanced Analytics Routes** |
+| GET    | `/api/v1/rag/analytics` | Get recommendation analytics |
+| POST   | `/api/v1/rag/track-interaction` | Track user interactions |
+| GET    | `/api/v1/rag/ab-test-results` | Get A/B test results |
 
 ---
 
@@ -222,6 +237,8 @@ curl -X POST http://localhost:7000/api/v1/rag/recommendations \
 
 - ✅ OpenAI GPT-4o integration for conversational intelligence
 - ✅ RAG-based recommendation system
+- ✅ Advanced machine learning recommendation algorithms
+- ✅ Real-time analytics and A/B testing framework
 - ✅ CIBIL score API integration
 - ✅ Advanced OCR with document linking
 - Real CIBIL score API
@@ -240,14 +257,20 @@ curl -X POST http://localhost:7000/api/v1/rag/recommendations \
 2. **Document Processing:** LangChain splits content into chunks
 3. **Embedding Generation:** OpenAI creates vector embeddings
 4. **Vector Storage:** ChromaDB stores embeddings with metadata
-5. **Query Processing:** User queries converted to embeddings
-6. **Similarity Search:** ChromaDB finds relevant credit cards
-7. **LLM Generation:** GPT-4o generates personalized recommendations
+5. **Feature Extraction:** Advanced algorithms extract customer and card features
+6. **Similarity Calculation:** Cosine similarity between customer profile and cards
+7. **Multi-Algorithm Processing:** Content-based, collaborative, and hybrid filtering
+8. **A/B Testing:** Algorithm performance comparison and optimization
+9. **Analytics Tracking:** Real-time performance monitoring and insights
+10. **LLM Generation:** GPT-4o generates personalized recommendations with explanations
 
 ### Key Components:
 - **Vector Database:** ChromaDB for similarity search
 - **Embeddings:** OpenAI text-embedding-3-large (3072 dimensions)
 - **LLM:** GPT-4o for natural language generation
+- **Recommendation Algorithms:** Content-based filtering, collaborative filtering, hybrid approaches
+- **Analytics Engine:** Real-time tracking, A/B testing, performance metrics
+- **Feature Engineering:** Customer profiling, card feature extraction, similarity calculations
 - **Document Chunking:** Recursive character text splitter
 - **Web Scraping:** Puppeteer + Cheerio for dynamic content
 

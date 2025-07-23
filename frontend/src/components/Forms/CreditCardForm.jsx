@@ -67,6 +67,9 @@ const CreditCardForm = () => {
           spendingCategories: ["shopping", "dining"], // You can add this field to form
           preferredRewards: ["cashback", "points"], // You can add this field to form
           annualFeeTolerance: "moderate", // You can add this field to form
+          recommendationType: "advanced", // Use advanced recommendation system
+          testGroup: "A", // A/B testing group
+          age: 30 // You can add this field to form
         },
         {
           headers: {
@@ -79,6 +82,23 @@ const CreditCardForm = () => {
       setRAGRecommendations(response.data.data.recommendations);
       setCibilScore(response.data.data.cibilData);
       setShowRAGRecommendations(true);
+      
+      // Track that user viewed recommendations
+      if (response.data.data.recommendationId) {
+        await axios.post(
+          "https://agentic-onboarding-backend.onrender.com/api/v1/rag/track-interaction",
+          {
+            recommendationId: response.data.data.recommendationId,
+            interactionType: "view"
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+            },
+          }
+        );
+      }
     } catch (error) {
       console.error("Error getting recommendations:", error);
       alert("Failed to get AI recommendations. Please try again.");
